@@ -1,0 +1,4 @@
+../drivers/mtd/mtd.c:31:5:register_MTD	24	static
+../drivers/mtd/mtd.c:64:5:read_MTD	32	static
+../drivers/mtd/mtd.c:94:5:write_MTD	32	static
+../drivers/mtd/mtd.c:128:15:find_MTD	24	static

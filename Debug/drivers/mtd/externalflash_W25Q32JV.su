@@ -1,0 +1,6 @@
+../drivers/mtd/externalflash_W25Q32JV.c:40:9:Open_SFLASH	16	static
+../drivers/mtd/externalflash_W25Q32JV.c:61:9:Init_SFLASH	8	static
+../drivers/mtd/externalflash_W25Q32JV.c:76:16:Read_SFLASH	32	static
+../drivers/mtd/externalflash_W25Q32JV.c:101:9:Write_SFLASH	32	static
+../drivers/mtd/externalflash_W25Q32JV.c:141:16:EraseSector_SFLASH	24	static
+../drivers/mtd/externalflash_W25Q32JV.c:176:9:Close_SFLASH	4	static

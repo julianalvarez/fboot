@@ -1,0 +1,7 @@
+../j1939/j1939.c:34:6:txBL_J1939	24	static
+../j1939/j1939.c:66:5:rxBL_J1939	48	static
+../j1939/j1939.c:115:6:PutCmdBL_J1939	32	static
+../j1939/j1939.c:137:5:GetCmdBL_J1939	40	static
+../j1939/j1939.c:168:6:TransmitMessage_J1939	40	static
+../j1939/j1939.c:206:5:ReceiveMessages_J1939	24	static
+../j1939/j1939.c:242:6:mmemcpy	24	static

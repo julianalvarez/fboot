@@ -1,0 +1,6 @@
+../drivers/mtd/eeprom_virtual_W25Q32JV.c:35:9:Open_VIRTUAL_EEPROM	16	static
+../drivers/mtd/eeprom_virtual_W25Q32JV.c:55:9:Init_VIRTUAL_EEPROM	8	static
+../drivers/mtd/eeprom_virtual_W25Q32JV.c:70:16:Read_VIRTUAL_EEPROM	40	static
+../drivers/mtd/eeprom_virtual_W25Q32JV.c:107:9:Write_VIRTUAL_EEPROM	40	static
+../drivers/mtd/eeprom_virtual_W25Q32JV.c:138:16:Erase_VIRTUAL_EEPROM	16	static
+../drivers/mtd/eeprom_virtual_W25Q32JV.c:152:9:Close_VIRTUAL_EEPROM	4	static
