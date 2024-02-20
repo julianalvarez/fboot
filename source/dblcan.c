@@ -193,7 +193,7 @@ S32 DeviceCAN_BL (void)
 \note                 [Write notes here]
 *******************************************************************************/
 void Run_BL (void)
-{
+{/*
     U32                 uStatusMemory;
     //U32                 Mayor_Ver;
     //U32                 Minor_Ver;
@@ -206,14 +206,14 @@ void Run_BL (void)
 
     read_MTD (MEMORY_READ_BASE + EEPROM_STATUS_MEMORY, (U8*)&uStatusMemory, 4U);
  
-    if (uStatusMemory == SIGNATURE_STATUS_MEMORY_OK){
-        /* Check Application ID */
+    //if (uStatusMemory == SIGNATURE_STATUS_MEMORY_OK){
+        // Check Application ID
         read_MTD (MEMORY_READ_BASE + EEPROM_APPLICATION_ID, (U8*)&uAppIDECU, 1U);
         uAppIDECU &= 0xFFU;
 
-        /* Check Software Version in Device */
+        // Check Software Version in Device
         read_MTD (MEMORY_READ_BASE + EEPROM_SOFTWARE_VER_INFO, (U8*)&uSoftVerECU, 3U);
-/*
+
         Build_Ver   = (uSoftVerECU >> 16) & 0xFFU;
         Mayor_Ver   = (uSoftVerECU >> 12) & 0x0FU;
         Minor_Ver   = (uSoftVerECU >>  4) & 0x0FU;
@@ -234,11 +234,11 @@ void Run_BL (void)
 
 
 
-    } else {
+    //} else {
         //sprintf (str, "Status: INVALID program");
 
 
-    }
+   // }
 }
 
 #if defined (MACH_CANSEED) || (MACH_CANSEEDRADAR) || defined(MACH_SMARTANTENNA) || defined(MACH_CANLIGHT) || defined (MACH_IOHUB) || defined (MACH_IOHUB_SPIFI) || defined (MACH_ECUROW) || defined(MACH_ACTIVESINGULATION)

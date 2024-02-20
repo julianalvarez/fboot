@@ -16,6 +16,7 @@
 //#include <fat.h>
 //#include <chip.h>
 //#include <board_api.h>
+#include "fsl_debug_console.h"
 
 /* Defines ********************************************************************/
 /* Typedefs *******************************************************************/
@@ -97,12 +98,15 @@ void HardFault_Handler(void)
 *******************************************************************************/
 S32 Open_CANSTEER_V3 (void)
 {
-  	CHAR                str[24];
+  	//CHAR                str[24];
 
 	/* Register Memories */
 	register_MTD (&VIRTUAL_EEPROM);
+    PRINTF("Virtual EEPROM registered \r\n");
+
 	register_MTD (&EFLASH);
-    
+    PRINTF("FLASH registered \r\n");
+
     SystemCoreClockUpdate();
     
     //Chip_GPIO_Init(LPC_GPIO_PORT);
@@ -116,12 +120,12 @@ S32 Open_CANSTEER_V3 (void)
 #endif
 
 	/* Address Device */ 
-    read_MTD (EFLASH_BASE + EEPROM_J1939_ADDRESS, &J1939_SrcAddress, 1U);
+    //read_MTD (EFLASH_BASE + EEPROM_J1939_ADDRESS, &J1939_SrcAddress, 1U);
     
 	//RxFilter_CAN (0U, ((((U32)J1939_PGN_BOOTLOADER) << 8) | ((U32)J1939_SrcAddress) << 8));
 	
 	/* Address Host */
-	J1939_DstAddress = J1939_ADDRESS_FBOOT; 
+	//J1939_DstAddress = J1939_ADDRESS_FBOOT;
     /*
 	// Print Version
 	sprintf (str, "FBOOT %1d.%02d.%02x-build%02x", MAYOR_VER, MINOR_VER, RELEASE_VER,

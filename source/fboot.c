@@ -21,11 +21,14 @@
 //#include <environment.cfg>
 #include <types32.h>
 #include <mach/cansteer_v3/cansteer_v3.h>
+#include <dbl.h>
+
 /* TODO: insert other definitions and declarations here. */
 
 /*
  * @brief   Application entry point.
  */
+
 int main(void) {
 
     /* Init board hardware. */
@@ -35,15 +38,14 @@ int main(void) {
     /* Init FSL debug console. */
     BOARD_InitDebugConsole();
 #endif
-
-    PRINTF("Hello World\r\n");
-    Open_CANSTEER_V3();
+    PRINTF("Bootloader Init\r\n");
+    //Open_CANSTEER_V3();
 
     /* Force the counter to be placed into memory. */
-    volatile static int i = 0 ;
+    //volatile static int i = 0 ;
     /* Enter an infinite loop, just incrementing a counter. */
     while(1) {
-    	 Run_BL();
+    	Run_BL();
         /* 'Dummy' NOP to allow source level single stepping of
             tight while() loop */
         __asm volatile ("nop");

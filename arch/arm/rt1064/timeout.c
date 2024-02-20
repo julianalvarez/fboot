@@ -12,10 +12,10 @@
 volatile bool	        HasTimeout;
 
 /* Statics ********************************************************************/
-static bool             _init = false;
+/*static bool             _init = false;
 static uint16_t         TimeOut;
 static uint16_t	        CounterTimeOut;
-static void 		    (*FunctionTM) (void);
+static void 		    (*FunctionTM) (void);*/
 #if 0
 /* Prototypes *****************************************************************/
 /* Functions ******************************************************************/
