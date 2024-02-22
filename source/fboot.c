@@ -39,7 +39,7 @@ int main(void) {
     BOARD_InitDebugConsole();
 #endif
     PRINTF("Bootloader Init\r\n");
-    //Open_CANSTEER_V3();
+    Open_CANSTEER_V3();
 
     /* Force the counter to be placed into memory. */
     //volatile static int i = 0 ;
