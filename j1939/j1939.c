@@ -188,10 +188,10 @@ void TransmitMessage_J1939 (U16 Pgn, U8 Prio, U8* pData, U32 Size)
 
   do 
   {
-    if (WaitIdle_CAN() == FALSE) {
-        PutMSG_CAN ((U8*)&OneMessage);
+    //if (WaitIdle_CAN() == FALSE) {
+        PutMSG_CAN (&OneMessage);
         break_timeout;
-    }
+    //}
   } while_timeout (1000, 0);
 }
 
@@ -207,26 +207,18 @@ S32 ReceiveMessages_J1939 (J1939MESSAGE_T* pOneMessage)
 {
   BOOL8                 bfPutInReceive;
     
-  bfPutInReceive = FALSE;
-  while (MsgReady_CAN() != 0U)
-  {
+  //bfPutInReceive = FALSE;
+  //while (MsgReady_CAN() != 0U)
+  //{
     bfPutInReceive = TRUE;
-    SelectRxBuffer_CAN();
     
     /* Get the Message */
-    bfPutInReceive = GetMSG_CAN ((U8*)pOneMessage);
+    bfPutInReceive = GetMSG_CAN (&pOneMessage);
    
     /* Release CAN Buffer */
-    ReleaseBF_CAN();
+    //ReleaseBF_CAN();
 
-    /* Platform Dependent */
-#ifdef READ_OWN_MSG_CAN
-    if (OneMessage.SourceAddress == J1939_Address) {
-        /* Discart Msg */
-        continue;           
-    }
-#endif
-  }
+ //}
 
   return (bfPutInReceive);
 }

@@ -7,8 +7,8 @@
 #include <stdio.h>
 #include <mach/cansteer_v3/cansteer_v3.h>
 //#include <mach/iohubspifi/board_iohub.h>
-//#include <timeout.h>
-//#include <can.h>
+#include <timeout.h>
+#include <can.h>
 //#include <usbh.h>
 //#include <ohci.h>
 #include <j1939.h>
@@ -114,9 +114,9 @@ S32 Open_CANSTEER_V3 (void)
 	/* HW init */
     //IOHUB_Port_Init(0);
     //IOHUB_PowerMode(POWER_MODE_ON);
-	//Open_TIMEOUT();
+    Open_TIMEOUT();
 #ifdef CAN_DEVICE
-    //Open_CAN(0);
+    Open_CAN(0);
 #endif
 
 	/* Address Device */ 
@@ -125,7 +125,7 @@ S32 Open_CANSTEER_V3 (void)
 	//RxFilter_CAN (0U, ((((U32)J1939_PGN_BOOTLOADER) << 8) | ((U32)J1939_SrcAddress) << 8));
 	
 	/* Address Host */
-	//J1939_DstAddress = J1939_ADDRESS_FBOOT;
+	J1939_DstAddress = J1939_ADDRESS_FBOOT;
     /*
 	// Print Version
 	sprintf (str, "FBOOT %1d.%02d.%02x-build%02x", MAYOR_VER, MINOR_VER, RELEASE_VER,

@@ -12,11 +12,11 @@
 volatile bool	        HasTimeout;
 
 /* Statics ********************************************************************/
-/*static bool             _init = false;
+static bool             _init = false;
 static uint16_t         TimeOut;
 static uint16_t	        CounterTimeOut;
-static void 		    (*FunctionTM) (void);*/
-#if 0
+static void 		    (*FunctionTM) (void);
+
 /* Prototypes *****************************************************************/
 /* Functions ******************************************************************/
 
@@ -30,18 +30,21 @@ static void 		    (*FunctionTM) (void);*/
  *    Notes:          Timer: 1000 Hz (1000 us period)       
  *
  ******************************************************************************/
+const pit_config_t BOARD_PIT_config = {
+  .enableRunInDebug = false
+};
 void Open_TIMEOUT (void)
 {
-    Chip_RIT_Init(LPC_RITIMER);
-    
-    Chip_RIT_SetTimerInterval(LPC_RITIMER,1);
-    
-	/* Clear interrupt */
-	Chip_RIT_ClearInt(LPC_RITIMER);
-    
-    NVIC_EnableIRQ(RITIMER_IRQn);
-    
-    __enable_irq(); // Ensure this is set for timing to work
+	/* Initialize the PIT. */
+	PIT_Init(BOARD_PIT_PERIPHERAL, &BOARD_PIT_config);
+	/* Set channel 0 period to 1 ms (75000 ticks). */
+	PIT_SetTimerPeriod(BOARD_PIT_PERIPHERAL, BOARD_PIT_CHANNEL_0, BOARD_PIT_CHANNEL_0_TICKS);
+	/* Enable interrupts from channel 0. */
+	PIT_EnableInterrupts(BOARD_PIT_PERIPHERAL, BOARD_PIT_CHANNEL_0, kPIT_TimerInterruptEnable);
+	/* Enable interrupt BOARD_PIT_IRQN request in the NVIC */
+	EnableIRQ(BOARD_PIT_IRQN);
+	/* Start channel 0. */
+	PIT_StartTimer(BOARD_PIT_PERIPHERAL, BOARD_PIT_CHANNEL_0);
 }
 
 /*******************************************************************************
@@ -55,12 +58,7 @@ void Open_TIMEOUT (void)
  ******************************************************************************/
 void Close_TIMEOUT (void)
 {
-    NVIC_DisableIRQ(RITIMER_IRQn);
-    
-    Chip_RIT_DeInit(LPC_RITIMER);
-    
-	/* Clear interrupt */
-	Chip_RIT_ClearInt(LPC_RITIMER);
+    NVIC_DisableIRQ(BOARD_PIT_IRQN);
 }
 
 /*******************************************************************************
@@ -72,24 +70,27 @@ void Close_TIMEOUT (void)
 *
 *    Notes:          .
 ******************************************************************************/
-void RIT_IRQHandler (void)
-{  
-	/* Clearn interrupt */
-	Chip_RIT_ClearInt(LPC_RITIMER);
+/* PIT_IRQn interrupt handler */
+void BOARD_PIT_IRQHANDLER(void) {
+	uint32_t status;
 
-    /* TIMEOUT */
-	if (TimeOut > 0U) {
-		CounterTimeOut++;
-        if (CounterTimeOut >= TimeOut) {
-			TimeOut    = 0U;
-           	HasTimeout = true;
-            if (FunctionTM != NULL) {
-            	FunctionTM();
-            }
-        }
-    } 
+	status = PIT_GetStatusFlags(PIT, kPIT_Chnl_0);
+	if(status & kPIT_TimerFlag){
+		PIT_ClearStatusFlags(BOARD_PIT_PERIPHERAL,BOARD_PIT_CHANNEL_0,kPIT_TimerFlag);
+			/* TIMEOUT */
+		if (TimeOut > 0U) {
+
+			CounterTimeOut++;
+			if (CounterTimeOut >= TimeOut) {
+				TimeOut    = 0U;
+				HasTimeout = true;
+				if (FunctionTM != NULL) {
+					FunctionTM();
+				}
+			}
+		}
+	}
 }
-
 /***************************************************************************//*!
 [General description here]
 
@@ -148,5 +149,5 @@ bool if_has_timeout (void)
 
     return (result);
 }
-#endif
+
 /* End of $Workfile: timeout.c$ */

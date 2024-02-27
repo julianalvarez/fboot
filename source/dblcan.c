@@ -7,7 +7,7 @@
 #include <typedef.h>
 #include <types32.h>
 //#include <usbh.h>
-//#include <chip.h>
+#include <cmsis_gcc.h>
 #include <mach/cansteer_v3/cansteer_v3.h>
 #include <timeout.h>
 #include <can.h>
@@ -30,13 +30,14 @@
 #endif
 
 #ifdef ARCH_ARM
-//static  CHAR            str[100];
+static  CHAR            str[100];
 #endif
+#define MEMORY_BUFFER_SIZE_USB              4096U  /* Size of Memory for general use */
 
 #if defined (MACH_VDU) || defined (MACH_SBOX) || defined (MACH_SBOXPLUS) || defined (MACH_EOS)
 U8                      aBUFFER[MEMORY_TRANSFER_MAX];
 #else
-//U8                      aBUFFER[MEMORY_BUFFER_SIZE_USB];
+U8                      aBUFFER[MEMORY_BUFFER_SIZE_USB];
 #endif
 
 void                    App (void);
@@ -59,13 +60,13 @@ void                    App (void);
                   AD = Address.
                   MT = Memory Transfer in Bytes.
 *******************************************************************************/
-/*
+
 S32 DeviceCAN_BL (void)
 {
     CMD_BL_E            eCMD_BL;
     U32                 uAddress;
     U32                 uSize;
-    PFV                 pReset;
+    //PFV                 pReset;
     U32                 i;
     BOOL32              if_timeout;
 
@@ -75,10 +76,6 @@ S32 DeviceCAN_BL (void)
 
     PutCmdBL_J1939 (RDY_CMD_BL, 0U, MEMORY_TRANSFER_MAX);
 
-#if defined (MACH_CANSEEDRADAR)
-    Console_Led (LED_IDLE);
-#endif
-
     // See if we enter in BOOTLOAD Mode
     if_timeout = GetCmdBL_J1939 ((U8*)&eCMD_BL, &uAddress, &uSize, 250U); 
 
@@ -87,81 +84,47 @@ S32 DeviceCAN_BL (void)
         {
             case RUN_CMD_BL:
             {
-#if defined (MACH_CANSEEDRADAR)
-                Console_Led (LED_RUN);
-#endif
-#ifdef ARCH_ARM 
                 sprintf (str, "> Run   [ Start: 0x%08X ]", uAddress);      
-                Console (str);
-#endif
                 // Delay 4 Sec.
                 do {} while_timeout (4000U, 0);
-#ifdef ARCH_ARM
-                __DISABLE_FIQ();
-                __DISABLE_IRQ();
-#else
-                DisableFIQ_P18F8680();
-                DisableIRQ_P18F8680();
-#endif
+                //__DISABLE_FIQ();
+                __disable_irq();
               Reset();
             } break;
 
             case READ_CMD_BL:
             {
-#if defined (MACH_CANSEEDRADAR)
-                Console_Led (LED_READ);
-#endif
                 if (read_MTD (uAddress, aBUFFER, uSize) == 0) {
-#ifdef ARCH_ARM 
                     sprintf (str, "> Read   [ Start: 0x%08X   Size: 0x%08X ]", 
                              uAddress, 
                              uSize);
-                    Console (str);
-#if defined (MACH_DD)
-                    Console_Led (LED_2_TOGGLE);
-#endif
-#endif
                 } else {
-#ifdef ARCH_ARM 
                     sprintf (str, "> Error   [ Start: 0x%08X   Size: 0x%08X ]", 
                              uAddress, 
                              uSize);
-                    Console (str);
                     // Invalidate Data
                     for (i = 0; i < uSize; i++) {
                         aBUFFER[i] = 0;
                     }
-#endif
                 }                
                 txBL_J1939 (aBUFFER, uSize);         
             } break;
 
             case WRITE_CMD_BL:
             {
-#if defined (MACH_CANSEEDRADAR)
-                Console_Led (LED_WRITE);
-#endif      
                 rxBL_J1939 (aBUFFER, uSize, 0U);                
                 if (write_MTD (uAddress, aBUFFER, uSize) == 0) {
                     // This was moved before rxBL_J1939 because we already has send
                     //RDY, and we lose packets if we are drawing in the screen
-#ifdef ARCH_ARM 
                     sprintf (str, "> Write   [ Start: 0x%08X   Size: 0x%08X ]", 
                              uAddress, 
                              uSize);
-                    Console (str);
-#if defined (MACH_DD)
-                    Console_Led (LED_1_TOGGLE);
-#endif
-#endif
+
                 } else {
-#ifdef ARCH_ARM 
                     sprintf (str, "> Error   [ Start: 0x%08X   Size: 0x%08X ]", 
                              uAddress, 
                              uSize);
-                    Console (str);                  
                 }
-#endif               
             } break;
             
             default: {} break;
@@ -169,21 +132,15 @@ S32 DeviceCAN_BL (void)
         
         //Send RDY
         PutCmdBL_J1939 (RDY_CMD_BL, 0U, MEMORY_TRANSFER_MAX);
-#if defined (MACH_CANSEEDRADAR)
-        Console_Led (LED_IDLE);
-#endif 
-#ifdef ARCH_ARM 
         sprintf (str, "< Rdy" );      
-        Console (str);
-#endif
         // Get CMD
         if_timeout = GetCmdBL_J1939 ((U8*)&eCMD_BL, &uAddress, &uSize, 0U);
     }
 
-  
+
     return (0);
 }
-*/
+
 /***************************************************************************//*!
 [General description here]
 
