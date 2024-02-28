@@ -14,6 +14,7 @@
 #include <mtd.h>
 #include <j1939.h>
 #include <dbl.h>
+#include "fsl_debug_console.h"
 
 /* Defines ********************************************************************/
 #if defined ARCH_ARM
