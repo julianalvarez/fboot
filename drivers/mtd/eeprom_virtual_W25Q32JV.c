@@ -16,10 +16,10 @@
 static MTD_T*           pMTD;
 
 /* Prototypes *****************************************************************/
-static S32              Read_VIRTUAL_EEPROM (U32 Address, U8* pData, U32 Size);
-static S32              Write_VIRTUAL_EEPROM (U32 Address, U8* pData, U32 Size);
-static S32              Erase_VIRTUAL_EEPROM (U32 Address, U32 Size);
-static S32              Close_VIRTUAL_EEPROM (void);
+__RAMFUNC(RAM2) static S32              Read_VIRTUAL_EEPROM (U32 Address, U8* pData, U32 Size);
+__RAMFUNC(RAM2) static S32              Write_VIRTUAL_EEPROM (U32 Address, U8* pData, U32 Size);
+__RAMFUNC(RAM2) static S32              Erase_VIRTUAL_EEPROM (U32 Address, U32 Size);
+__RAMFUNC(RAM2) static S32              Close_VIRTUAL_EEPROM (void);
 
 /* Functions ******************************************************************/
 

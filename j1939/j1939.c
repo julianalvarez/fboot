@@ -213,7 +213,7 @@ S32 ReceiveMessages_J1939 (J1939MESSAGE_T* pOneMessage)
     bfPutInReceive = TRUE;
     
     /* Get the Message */
-    bfPutInReceive = GetMSG_CAN (&pOneMessage);
+    bfPutInReceive = GetMSG_CAN (pOneMessage);
    
     /* Release CAN Buffer */
     //ReleaseBF_CAN();

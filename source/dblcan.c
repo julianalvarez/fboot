@@ -84,7 +84,7 @@ S32 DeviceCAN_BL (void)
         {
             case RUN_CMD_BL:
             {
-                sprintf (str, "> Run   [ Start: 0x%08X ]", uAddress);      
+                PRINTF( "> Run   [ Start: 0x%08X ]", uAddress);
                 // Delay 4 Sec.
                 do {} while_timeout (4000U, 0);
                 //__DISABLE_FIQ();
@@ -95,11 +95,11 @@ S32 DeviceCAN_BL (void)
             case READ_CMD_BL:
             {
                 if (read_MTD (uAddress, aBUFFER, uSize) == 0) {
-                    sprintf (str, "> Read   [ Start: 0x%08X   Size: 0x%08X ]", 
+                	PRINTF( "> Read   [ Start: 0x%08X   Size: 0x%08X ]",
                              uAddress, 
                              uSize);
                 } else {
-                    sprintf (str, "> Error   [ Start: 0x%08X   Size: 0x%08X ]", 
+                	PRINTF( "> Error   [ Start: 0x%08X   Size: 0x%08X ]",
                              uAddress, 
                              uSize);
                     // Invalidate Data
@@ -116,12 +116,12 @@ S32 DeviceCAN_BL (void)
                 if (write_MTD (uAddress, aBUFFER, uSize) == 0) {
                     // This was moved before rxBL_J1939 because we already has send
                     //RDY, and we lose packets if we are drawing in the screen
-                    sprintf (str, "> Write   [ Start: 0x%08X   Size: 0x%08X ]", 
+                	PRINTF( "> Write   [ Start: 0x%08X   Size: 0x%08X ]",
                              uAddress, 
                              uSize);
 
                 } else {
-                    sprintf (str, "> Error   [ Start: 0x%08X   Size: 0x%08X ]", 
+                	PRINTF( "> Error   [ Start: 0x%08X   Size: 0x%08X ]",
                              uAddress, 
                              uSize);
                 }
@@ -132,7 +132,7 @@ S32 DeviceCAN_BL (void)
         
         //Send RDY
         PutCmdBL_J1939 (RDY_CMD_BL, 0U, MEMORY_TRANSFER_MAX);
-        sprintf (str, "< Rdy" );      
+        PRINTF(str, "< Rdy" );
         // Get CMD
         if_timeout = GetCmdBL_J1939 ((U8*)&eCMD_BL, &uAddress, &uSize, 0U);
     }

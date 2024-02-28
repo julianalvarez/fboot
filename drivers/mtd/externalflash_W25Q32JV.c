@@ -7,7 +7,7 @@
 #include <mtd.h>
 //#include <chip.h>
 #include <sflash_W25Q32JV.h>
-
+#include <cr_section_macros.h>
 /* Defines ********************************************************************/
 
 #define SECTOR_SIZE                         0x400U
@@ -21,10 +21,10 @@
 static MTD_T*           pMTD;
 
 /* Prototypes *****************************************************************/
-static S32              Read_SFLASH (U32 Address, U8* pData, U32 Size);
-static S32              Write_SFLASH (U32 Address, U8* pData, U32 Size);
-static S32              EraseSector_SFLASH (U32 Address, U32 Size);
-static S32              Close_SFLASH (void);
+__RAMFUNC(RAM2) static S32              Read_SFLASH (U32 Address, U8* pData, U32 Size);
+__RAMFUNC(RAM2) static S32              Write_SFLASH (U32 Address, U8* pData, U32 Size);
+__RAMFUNC(RAM2) static S32              EraseSector_SFLASH (U32 Address, U32 Size);
+__RAMFUNC(RAM2) static S32              Close_SFLASH (void);
 
 /* Functions ******************************************************************/
 

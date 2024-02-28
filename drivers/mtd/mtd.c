@@ -6,6 +6,7 @@
 //#include <environment.cfg>
 #include <types32.h>
 #include <mtd.h>
+#include <cmsis_gcc.h>
 
 /* Defines ********************************************************************/
 #define MAX_MTD                             8U
@@ -71,7 +72,7 @@ S32 read_MTD (U32 Address, U8* pData, U32 Size)
   if (ptMTD == NULL) {
     return -1;
   }
-
+  __disable_irq();
   ptMTD->open(ptMTD);
 
   Address &= ptMTD->MaskAddress;
@@ -79,6 +80,7 @@ S32 read_MTD (U32 Address, U8* pData, U32 Size)
   ptMTD->read (Address, pData, Size);
 
   ptMTD->close();
+  __enable_irq();
 
   return (0);
 }

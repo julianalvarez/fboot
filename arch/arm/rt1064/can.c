@@ -9,19 +9,26 @@
 #include <can.h>
 #include "fsl_debug_console.h"
 #include "fsl_flexcan.h"
+#include "board/pin_mux.h"
+#include "board/peripherals.h"
+
 
 /* Defines ********************************************************************/
 #define PCLK                                120000000
 #define MAX_PGN_FILTERS                     3
-#define RX_MESSAGE_BUFFER_NUM (10)
-#define TX_MESSAGE_BUFFER_NUM (9)
+#define CAN_MAX_BUS_NR                      3U
 
-/* Select 60M clock divided by USB1 PLL (480 MHz) as master flexcan clock source */
-#define FLEXCAN_CLOCK_SOURCE_SELECT (0U)
-/* Clock divider for master flexcan clock source */
-#define FLEXCAN_CLOCK_SOURCE_DIVIDER (2U)
-/* Get frequency of flexcan clock */
-#define EXAMPLE_CAN_CLK_FREQ ((CLOCK_GetFreq(kCLOCK_Usb1PllClk) / 8) / (FLEXCAN_CLOCK_SOURCE_DIVIDER + 1U))
+#define TX_MESSAGE_BUFFER_NUM (2)
+#define RX_MESSAGE_BUFFER_NUM (1)
+#define TS_CAN CAN2
+
+#define BOARD_CAN2_PERIPHERAL CAN2
+/* Definition of the clock source frequency */
+#define BOARD_CAN2_CLOCK_SOURCE 40000000UL
+/* CAN2 interrupt vector ID (number). */
+#define BOARD_CAN2_FLEXCAN_IRQN CAN2_IRQn
+/* CAN2 interrupt handler identifier. */
+#define BOARD_CAN2_FLEXCAN_IRQHANDLER CAN2_IRQHandler
 /* Globals ********************************************************************/
 /* Statics ********************************************************************/
 U32              aPGN_FILTER[MAX_PGN_FILTERS];
@@ -226,71 +233,12 @@ void SelectTxBuffer_CAN (U8 Window)
  *    Notes:            CAN INTERRUPT Shall be ENABLED before ENABLE_IRQ
  *                      
  ******************************************************************************/
-static FLEXCAN_CALLBACK(flexcan_callback)
-{
-    switch (status)
-    {
-        /* Process FlexCAN Rx event. */
-        case kStatus_FLEXCAN_RxIdle:
-            if (RX_MESSAGE_BUFFER_NUM == result)
-            {
-                rxComplete = true;
-            }
-            break;
-
-        /* Process FlexCAN Tx event. */
-        case kStatus_FLEXCAN_TxIdle:
-            if (TX_MESSAGE_BUFFER_NUM == result)
-            {
-                txComplete = true;
-            }
-            break;
-
-        default:
-            break;
-    }
-}
 
 S32 Open_CAN (U32 ctrl)
 {
-    flexcan_config_t flexcanConfig;
-    flexcan_rx_mb_config_t mbConfig;
-
-    /*Clock setting for FLEXCAN*/
-    CLOCK_SetMux(kCLOCK_CanMux, FLEXCAN_CLOCK_SOURCE_SELECT);
-    CLOCK_SetDiv(kCLOCK_CanDiv, FLEXCAN_CLOCK_SOURCE_DIVIDER);
-
-    FLEXCAN_GetDefaultConfig(&flexcanConfig);
-
-    flexcanConfig.enableLoopBack = true;
-
-    flexcan_timing_config_t timing_config;
-    memset(&timing_config, 0, sizeof(flexcan_timing_config_t));
-
-    if (FLEXCAN_CalculateImprovedTimingValues(CAN2, flexcanConfig.bitRate, EXAMPLE_CAN_CLK_FREQ, &timing_config))
-    {
-        /* Update the improved timing configuration*/
-        memcpy(&(flexcanConfig.timingConfig), &timing_config, sizeof(flexcan_timing_config_t));
-    }
-    else
-    {
-    	PRINTF("No found Improved Timing Configuration. Just used default configuration\r\n\r\n");
-    }
-
-    FLEXCAN_Init(CAN2, &flexcanConfig, EXAMPLE_CAN_CLK_FREQ);
-
-    /* Setup Rx Message Buffer. */
-    mbConfig.format = kFLEXCAN_FrameFormatExtend;
-    mbConfig.type   = kFLEXCAN_FrameTypeData;
-    mbConfig.id     = FLEXCAN_ID_EXT(0UL);
-
-    FLEXCAN_SetRxMbConfig(CAN2, RX_MESSAGE_BUFFER_NUM, &mbConfig, true);
-
-/* Setup Tx Message Buffer. */
-    FLEXCAN_SetTxMbConfig(CAN2, TX_MESSAGE_BUFFER_NUM, true);
-
-    /* Create FlexCAN handle structure and set call back function. */
-    FLEXCAN_TransferCreateHandle(CAN2, &flexcanHandle, flexcan_callback, NULL);
+	BOARD_InitPins_CAN2();
+	BOARD_InitCAN2();
+	FLEXCAN_SetRxMbGlobalMask(BOARD_CAN2_PERIPHERAL, FLEXCAN_RX_MB_EXT_MASK(0, 0, 0));
 
     return 0;
 
@@ -353,23 +301,33 @@ S8 RxFilter_CAN (U8 FilterN, U32 Data)
  ******************************************************************************/
 BOOL8 GetMSG_CAN (J1939MESSAGE_T* pMSG)
 {
-    rxXfer.mbIdx = (uint8_t)RX_MESSAGE_BUFFER_NUM;
-    rxXfer.frame = &rxframe;
-    (void)FLEXCAN_TransferReceiveNonBlocking(CAN2, &flexcanHandle, &rxXfer);
+	uint32_t msgId;
 
-    // DATA FRAME
-    *(uint8_t*) &pMSG->Data.Byte[0] = rxframe.dataByte0;
-    *(uint8_t*) &pMSG->Data.Byte[1] = rxframe.dataByte1;
-    *(uint8_t*) &pMSG->Data.Byte[2] = rxframe.dataByte2;
-    *(uint8_t*) &pMSG->Data.Byte[3] = rxframe.dataByte3;
-    *(uint8_t*) &pMSG->Data.Byte[4] = rxframe.dataByte4;
-    *(uint8_t*) &pMSG->Data.Byte[5] = rxframe.dataByte5;
-    *(uint8_t*) &pMSG->Data.Byte[6] = rxframe.dataByte6;
-    *(uint8_t*) &pMSG->Data.Byte[7] = rxframe.dataByte7;
-    while(!rxComplete)
-    {
-    }
-    return 0;
+	if(rxComplete){
+		msgId = rxframe.id;
+
+		pMSG->Priority = (msgId & 0x1C0000) >> 26;
+		pMSG->PDUFormat = (msgId & 0x3FF0000) >> 16;
+		pMSG->PDUSpecific = (msgId & 0xFF00) >> 8;
+		pMSG->SourceAddress = msgId & 0xFF;
+		pMSG->DataLength = rxframe.length;
+		// DATA FRAME
+		*(uint8_t*) &pMSG->Data.Byte[0] = rxframe.dataByte0;
+		*(uint8_t*) &pMSG->Data.Byte[1] = rxframe.dataByte1;
+		*(uint8_t*) &pMSG->Data.Byte[2] = rxframe.dataByte2;
+		*(uint8_t*) &pMSG->Data.Byte[3] = rxframe.dataByte3;
+		*(uint8_t*) &pMSG->Data.Byte[4] = rxframe.dataByte4;
+		*(uint8_t*) &pMSG->Data.Byte[5] = rxframe.dataByte5;
+		*(uint8_t*) &pMSG->Data.Byte[6] = rxframe.dataByte6;
+		*(uint8_t*) &pMSG->Data.Byte[7] = rxframe.dataByte7;
+		rxComplete = false;
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+
 }
 
 
@@ -379,10 +337,10 @@ void PutMSG_CAN (J1939MESSAGE_T* pMSG)
 
 	frame.format = pMSG->PDUFormat;
 	frame.type = kFLEXCAN_FrameTypeData;
-	frame.id = (((uint32_t)pMSG->Priority) << 26)  |
+	frame.id =  FLEXCAN_ID_EXT((((uint32_t)pMSG->Priority) << 26)  |
                (((uint32_t)pMSG->PDUFormat) << 16) |
                (((uint32_t)pMSG->PDUSpecific) << 8)|
-               (uint32_t)pMSG->SourceAddress;
+               (uint32_t)pMSG->SourceAddress);
 	frame.length = pMSG->DataLength;
 
 	frame.dataByte0 = pMSG->Data.Byte[0];
@@ -394,21 +352,18 @@ void PutMSG_CAN (J1939MESSAGE_T* pMSG)
 	frame.dataByte6 = pMSG->Data.Byte[6];
 	frame.dataByte7 = pMSG->Data.Byte[7];
 
-
-    /* Send data through Tx Message Buffer. */
-    txXfer.mbIdx = (uint8_t)TX_MESSAGE_BUFFER_NUM;
-    txXfer.frame = &frame;
-    (void)FLEXCAN_TransferSendNonBlocking(CAN2, &flexcanHandle, &txXfer);
+	FLEXCAN_TransferSendBlocking(TS_CAN, TX_MESSAGE_BUFFER_NUM, &frame);
 }
 
 
+
+void BOARD_CAN2_FLEXCAN_IRQHANDLER(void)
+{
+	if (FLEXCAN_GetMbStatusFlags(TS_CAN,1<<RX_MESSAGE_BUFFER_NUM))
+	{
+		FLEXCAN_ClearMbStatusFlags(CAN2,1<<RX_MESSAGE_BUFFER_NUM);
+		FLEXCAN_ReadRxMb(TS_CAN,RX_MESSAGE_BUFFER_NUM,&rxframe);
+		rxComplete=true;
+	}
+}
 /* End of $Workfile: can.c$ */
-
-bool CAN_GetTxComplete (void)
-{
-	return txComplete;
-}
-bool CAN_GetRxComplete (void)
-{
-	return rxComplete;
-}

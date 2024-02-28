@@ -41,10 +41,12 @@ int main(void) {
     PRINTF("Bootloader Init\r\n");
     Open_CANSTEER_V3();
 
+
     /* Force the counter to be placed into memory. */
     //volatile static int i = 0 ;
     /* Enter an infinite loop, just incrementing a counter. */
     while(1) {
+    	DeviceCAN_BL();
     	Run_BL();
         /* 'Dummy' NOP to allow source level single stepping of
             tight while() loop */

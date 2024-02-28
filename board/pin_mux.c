@@ -225,10 +225,6 @@ pin_labels:
  * Description   : Calls initialization functions.
  * 
  * END ****************************************************************************************************************/
-void BOARD_InitBootPins(void) {
-    BOARD_InitPins();
-    BOARD_InitDEBUG_UART();
-}
 
 /*
  * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
@@ -244,8 +240,6 @@ BOARD_InitPins:
  * Description   : Configures pin routing and optionally pin electrical features.
  *
  * END ****************************************************************************************************************/
-void BOARD_InitPins(void) {
-}
 
 
 /*

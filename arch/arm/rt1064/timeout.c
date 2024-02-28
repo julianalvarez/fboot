@@ -30,13 +30,13 @@ static void 		    (*FunctionTM) (void);
  *    Notes:          Timer: 1000 Hz (1000 us period)       
  *
  ******************************************************************************/
-const pit_config_t BOARD_PIT_config = {
+const pit_config_t BOARD_PIT_boot_config = {
   .enableRunInDebug = false
 };
 void Open_TIMEOUT (void)
 {
 	/* Initialize the PIT. */
-	PIT_Init(BOARD_PIT_PERIPHERAL, &BOARD_PIT_config);
+	PIT_Init(BOARD_PIT_PERIPHERAL, &BOARD_PIT_boot_config);
 	/* Set channel 0 period to 1 ms (75000 ticks). */
 	PIT_SetTimerPeriod(BOARD_PIT_PERIPHERAL, BOARD_PIT_CHANNEL_0, BOARD_PIT_CHANNEL_0_TICKS);
 	/* Enable interrupts from channel 0. */

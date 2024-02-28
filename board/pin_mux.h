@@ -42,14 +42,12 @@ extern "C" {
  * @brief Calls initialization functions.
  *
  */
-void BOARD_InitBootPins(void);
 
 
 /*!
  * @brief Configures pin routing and optionally pin electrical features.
  *
  */
-void BOARD_InitPins(void);
 
 /* GPIO_AD_B0_12 (coord K14), UART1_TXD */
 #define BOARD_INITDEBUG_UART_UART1_TXD_PERIPHERAL                        LPUART1   /*!< Device name: LPUART1 */
