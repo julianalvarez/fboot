@@ -113,12 +113,12 @@ S32 DeviceCAN_BL (void)
 }
 
 void Run_BL (void)
-{/*
+{
     U32                 uStatusMemory;
-    //U32                 Mayor_Ver;
-    //U32                 Minor_Ver;
-    //U32                 Release_Ver;
-    //U32                 Build_Ver;
+    U32                 Mayor_Ver;
+    U32                 Minor_Ver;
+    U32                 Release_Ver;
+    U32                 Build_Ver;
     U32                 uAppIDECU;
     U32                 uSoftVerECU;
     
@@ -126,7 +126,7 @@ void Run_BL (void)
 
     read_MTD (MEMORY_READ_BASE + EEPROM_STATUS_MEMORY, (U8*)&uStatusMemory, 4U);
  
-    //if (uStatusMemory == SIGNATURE_STATUS_MEMORY_OK){
+    if (uStatusMemory == SIGNATURE_STATUS_MEMORY_OK){
         // Check Application ID
         read_MTD (MEMORY_READ_BASE + EEPROM_APPLICATION_ID, (U8*)&uAppIDECU, 1U);
         uAppIDECU &= 0xFFU;
@@ -140,27 +140,22 @@ void Run_BL (void)
         Release_Ver =  uSoftVerECU        & 0x0FU;
 
         // Jump to Application
-        sprintf (str, "Running SW AppID: %2d Ver: %1d.%1d.%1d-build%2d", 
+        PRINTF( "Running SW AppID: %2d Ver: %1d.%1d.%1d-build%2d",
                  uAppIDECU, Mayor_Ver, Minor_Ver, Release_Ver, Build_Ver);
-        Console (str);
         // Delay 100ms to wait the print in console before jump to program.
         do {} while_timeout (100U, 0);
         
 
-
-
-*/
 		Close_TIMEOUT();
 		Close_CAN();
         App ();
 
 
+    } else {
+    	PRINTF( "Status: INVALID program");
 
-    //} else {
-        //sprintf (str, "Status: INVALID program");
 
-
-   // }
+   }
 }
 
 #if defined (MACH_CANSEED) || (MACH_CANSEEDRADAR) || defined(MACH_SMARTANTENNA) || defined(MACH_CANLIGHT) || defined (MACH_IOHUB) || defined (MACH_IOHUB_SPIFI) || defined (MACH_ECUROW) || defined(MACH_ACTIVESINGULATION)
