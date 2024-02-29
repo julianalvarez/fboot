@@ -2,11 +2,8 @@
 /* Include ********************************************************************/
 #include <cfg.h>
 #include <stdio.h>
-
-//#include <environment.cfg>
 #include <typedef.h>
 #include <types32.h>
-//#include <usbh.h>
 #include <cmsis_gcc.h>
 #include <mach/cansteer_v3/cansteer_v3.h>
 #include <timeout.h>
@@ -26,48 +23,21 @@
 /* Typedefs *******************************************************************/
 /* Globals ********************************************************************/
 /* Statics ********************************************************************/
-#ifdef ARCH_PIC
-#pragma udata           gprm
-#endif
 
-#ifdef ARCH_ARM
-static  CHAR            str[100];
-#endif
 #define MEMORY_BUFFER_SIZE_USB              4096U  /* Size of Memory for general use */
 
-#if defined (MACH_VDU) || defined (MACH_SBOX) || defined (MACH_SBOXPLUS) || defined (MACH_EOS)
-U8                      aBUFFER[MEMORY_TRANSFER_MAX];
-#else
 U8                      aBUFFER[MEMORY_BUFFER_SIZE_USB];
-#endif
 
 void                    App (void);
 
 /* Prototypes *****************************************************************/
 /* Functions ******************************************************************/
-//__weak void SYSTEM_Close(void) { }
-
-/***************************************************************************//*!
-[General description here]
-
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note          TXmsg = 0 ST0 ST1 ST2 ST3 MT0 MT1 MT2 
-                  ST = Status Memory.
-                  MT = Memory Transfer in Bytes.
-               RXmsg = CMD AD0 AD1 AD2 AD3 MT0 MT1 MT2 
-                 CMD = Command. 
-                  AD = Address.
-                  MT = Memory Transfer in Bytes.
-*******************************************************************************/
 
 S32 DeviceCAN_BL (void)
 {
     CMD_BL_E            eCMD_BL;
     U32                 uAddress;
     U32                 uSize;
-    //PFV                 pReset;
     U32                 i;
     BOOL32              if_timeout;
 
@@ -133,7 +103,7 @@ S32 DeviceCAN_BL (void)
         
         //Send RDY
         PutCmdBL_J1939 (RDY_CMD_BL, 0U, MEMORY_TRANSFER_MAX);
-        PRINTF(str, "< Rdy" );
+        PRINTF("< Rdy" );
         // Get CMD
         if_timeout = GetCmdBL_J1939 ((U8*)&eCMD_BL, &uAddress, &uSize, 0U);
     }
@@ -142,14 +112,6 @@ S32 DeviceCAN_BL (void)
     return (0);
 }
 
-/***************************************************************************//*!
-[General description here]
-
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note                 [Write notes here]
-*******************************************************************************/
 void Run_BL (void)
 {/*
     U32                 uStatusMemory;
@@ -185,9 +147,11 @@ void Run_BL (void)
         do {} while_timeout (100U, 0);
         
 
-        Close_TIMEOUT();
-        Close_CAN();
+
+
 */
+		Close_TIMEOUT();
+		Close_CAN();
         App ();
 
 

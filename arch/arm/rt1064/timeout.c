@@ -3,7 +3,6 @@
 /* Include ********************************************************************/
 #include <typedef.h>
 #include <timeout.h>
-//#include <chip.h>
 
 /* Defines ********************************************************************/
 #define PERIOD_TIMER                        1U
@@ -20,16 +19,6 @@ static void 		    (*FunctionTM) (void);
 /* Prototypes *****************************************************************/
 /* Functions ******************************************************************/
 
-/*******************************************************************************
- *    Function Name:  
- *    Parameters:     
- *    Return Value:   
- *
- *    Description:    
- *                     
- *    Notes:          Timer: 1000 Hz (1000 us period)       
- *
- ******************************************************************************/
 const pit_config_t BOARD_PIT_boot_config = {
   .enableRunInDebug = false
 };
@@ -47,29 +36,11 @@ void Open_TIMEOUT (void)
 	PIT_StartTimer(BOARD_PIT_PERIPHERAL, BOARD_PIT_CHANNEL_0);
 }
 
-/*******************************************************************************
- *    Function Name:  .
- *    Parameters:     .
- *    Return Value:   .
- *
- *    Description:    .
- *
- *    Notes:          .
- ******************************************************************************/
 void Close_TIMEOUT (void)
 {
     NVIC_DisableIRQ(BOARD_PIT_IRQN);
 }
 
-/*******************************************************************************
-*    Function Name:  Isr_TIMER2
-*    Parameters:     None.
-*    Return Value:   None.
-*
-*    Description:    Service the SW timers.
-*
-*    Notes:          .
-******************************************************************************/
 /* PIT_IRQn interrupt handler */
 void BOARD_PIT_IRQHANDLER(void) {
 	uint32_t status;
@@ -91,14 +62,7 @@ void BOARD_PIT_IRQHANDLER(void) {
 		}
 	}
 }
-/***************************************************************************//*!
-[General description here]
 
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note                 
-*******************************************************************************/
 bool timeout (uint32_t TimeInMSeconds, void (*pfv)(void))
 {    
     __disable_irq();
@@ -113,14 +77,6 @@ bool timeout (uint32_t TimeInMSeconds, void (*pfv)(void))
     return (HasTimeout);
 }
 
-/***************************************************************************//*!
-[General description here]
-
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note                 
-*******************************************************************************/
 void reset_timeout (void)
 {
     __disable_irq();
@@ -131,14 +87,6 @@ void reset_timeout (void)
     __enable_irq();
 }
 
-/***************************************************************************//*!
-[General description here]
-
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note                 
-*******************************************************************************/
 bool if_has_timeout (void)
 {
     bool                result;

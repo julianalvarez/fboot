@@ -1,35 +1,18 @@
 
-             
 /* Include ********************************************************************/
 #include <cfg.h>
-//#include <environment.cfg>
 #include <types32.h>
 #include <stdio.h>
 #include <mach/cansteer_v3/cansteer_v3.h>
-//#include <mach/iohubspifi/board_iohub.h>
 #include <timeout.h>
 #include <can.h>
-//#include <usbh.h>
-//#include <ohci.h>
 #include <j1939.h>
 #include <mtd.h>
-//#include <fat.h>
-//#include <chip.h>
-//#include <board_api.h>
 #include "fsl_debug_console.h"
 
 /* Defines ********************************************************************/
 /* Typedefs *******************************************************************/
 /* Globals ********************************************************************/
-/*
- * Serial Number = 0001
- * Manufacture date = 03/09 
- * Hardware version = 1.2.0
- * Software version = 1.0.0 - build 1
- * J1939 Address = 233
- * Signature = Invalid Program 
- */
-
 /* Statics ********************************************************************/
 const uint32_t aFLASH_START_SECTOR[] = {0};
 /*
@@ -78,24 +61,7 @@ MTD_T                   EFLASH =
 
 /* Prototypes *****************************************************************/
 /* Functions ******************************************************************/
-/*
-void HardFault_Handler(void)
-{
-    int i;
-    while (1) {
-        i = i;
-        i++;
-    }
-}
-*/
-/***************************************************************************//*!
-[General description here]
 
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note                 [Write notes here]
-*******************************************************************************/
 S32 Open_CANSTEER_V3 (void)
 {
   	//CHAR                str[24];
@@ -122,7 +88,7 @@ S32 Open_CANSTEER_V3 (void)
 	/* Address Device */ 
     //read_MTD (EFLASH_BASE + EEPROM_J1939_ADDRESS, &J1939_SrcAddress, 1U);
     
-	//RxFilter_CAN (0U, ((((U32)J1939_PGN_BOOTLOADER) << 8) | ((U32)J1939_SrcAddress) << 8));
+	RxFilter_CAN (0U, ((((U32)J1939_PGN_BOOTLOADER) << 8) | ((U32)J1939_SrcAddress) << 8));
 	
 	/* Address Host */
 	J1939_DstAddress = J1939_ADDRESS_FBOOT;
@@ -138,73 +104,6 @@ S32 Open_CANSTEER_V3 (void)
 	*/
 	return (0);
 }
-/*
-void SYSTEM_Close(void) {
-    IOHUB_PowerMode(POWER_MODE_STANDBY);
-}
-*/
-/***************************************************************************//*!
-[General description here]
 
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note                 [Write notes here]
-*******************************************************************************/
-/*
-void Console (CHAR* pTEXT)
-{
-    PRINT_Log (pTEXT); 
-    PRINT_Log ("\n"); 
-}
-*/
-/***************************************************************************//*!
-[General description here]
-
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note                 [Write notes here]
-*******************************************************************************/
-/*
-char ConsoleGetChar (void)
-{
-    return Board_UARTGetChar();
-}*/
-/***************************************************************************//*!
-[General description here]
-
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note                 [Write notes here]
-*******************************************************************************/
-/*
-void Console_Led (LED_E eLed)
-{
-    static uint8_t i;
-    
-    switch (eLed) {
-        case LED_1_TOGGLE:
-            i++;
-            break;
-
-        case LED_2_TOGGLE:
-            break;
-
-        default:
-            i = 0;
-            break;
-    }
-#ifdef FOR_VDU7
-
-#else
-    // Disabled for compatibility with vdu7
-    //Chip_GPIO_WritePortBit(LPC_GPIO_PORT, 1, 2, i&0x1); // Backlight
-#endif
-    Chip_GPIO_WritePortBit(LPC_GPIO_PORT, 5,15, i&0x1); // Blue Led 1
-    Chip_GPIO_WritePortBit(LPC_GPIO_PORT, 5,16, i&0x1); // Blue Led 2
-}
-*/
 /* End of $Workfile: canseed.c$ */
 

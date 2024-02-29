@@ -4,7 +4,7 @@
 
 /* Include ********************************************************************/
 #include <types32.h>
-//#include "chip.h"
+#include "fsl_common.h"
 
 /* Enums **********************************************************************/
 typedef enum {
@@ -49,18 +49,16 @@ extern "C"
 #endif
 
 S32                     Open_CANSTEER_V3(void);
-/*
-void                    Console (CHAR* pTEXT);
-char                    ConsoleGetChar (void);
-void                    Console_Led (LED_E eLed);
-    */
+
 static inline void Reset() {
-    /* Solution for malfunctioning NVIC_SysyemReset() *
-     * from https://www.lpcware.com/content/forum/lpc4337-problem-while-setting-pll-after-reset */
-    *(volatile unsigned int *)0x40043100 = 0x10400000; //memmap with boot ROM address
-    *(volatile unsigned int *)0x40053100 =(1<<0); // Core reset
-    
-//    NVIC_SystemReset(); // Does not work properly
+	/*
+    //Configure the software reset bit in the SRC register
+    SRC->SRSR |= SRC_SCR_CORE0_RST_MASK;
+
+    // Wait for the software reset bit to clear, indicating that the reset is complete
+    while (SRC->SRSR & SRC_SCR_CORE0_RST_MASK) {
+    }*/
+	__NVIC_SystemReset();
 }
 
 #if defined(__cplusplus)

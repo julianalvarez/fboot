@@ -1,17 +1,12 @@
 
-
 /* Include ********************************************************************/
 #include <cfg.h>
-//#include <environment.cfg>
 #include <types32.h>
-//#include <lpc_types.h>
-//#include <arch/arm/lpc29xx/lpc29xx.h>
 #include <can.h>
 #include "fsl_debug_console.h"
 #include "fsl_flexcan.h"
 #include "board/pin_mux.h"
 #include "board/peripherals.h"
-
 
 /* Defines ********************************************************************/
 #define PCLK                                120000000
@@ -29,6 +24,7 @@
 #define BOARD_CAN2_FLEXCAN_IRQN CAN2_IRQn
 /* CAN2 interrupt handler identifier. */
 #define BOARD_CAN2_FLEXCAN_IRQHANDLER CAN2_IRQHandler
+
 /* Globals ********************************************************************/
 /* Statics ********************************************************************/
 U32              aPGN_FILTER[MAX_PGN_FILTERS];
@@ -38,201 +34,13 @@ flexcan_handle_t flexcanHandle;
 flexcan_mb_transfer_t txXfer, rxXfer;
 flexcan_frame_t rxframe;
 
-//static CAN_REGS_T*      __pCAN;
-
 /* Prototypes *****************************************************************/
 /* Functions ******************************************************************/
 
-/*******************************************************************************
- *    Function Name:  .
- *    Parameters:     .
- *    Return Value:   .
- *
- *    Description:    .
- *
- *    Notes:					.
- ******************************************************************************//*
-U8 MsgReady_CAN (void)
-{
-  	// Return true if msg ready, false if not
-  	return (__pCAN->GS & (1 << 0));
-}
-*/
-/*******************************************************************************
- *    Function Name:  .
- *    Parameters:     .
- *    Return Value:   .
- *
- *    Description:    .
- *
- *    Notes:					.
- ******************************************************************************//*
-U8 WaitIdle_CAN (void)
-{
-  	// Return true if buffer is available, false if not
-    return ((__pCAN->STAT & (1 << 2)) ? 0 : 1);
-}
-*/
-/*******************************************************************************
- *    Function Name:  .
- *    Parameters:     .
- *    Return Value:   .
- *
- *    Description:    .
- *
- *    Notes:					.
- ******************************************************************************/
 void ReleaseBF_CAN (void)
 {
     //__pCAN->CMD = (1 << 2);                   /* Release receive buffer */
 }
-
-/*******************************************************************************
- *    Function Name:  .
- *    Parameters:     .
- *    Return Value:   .
- *
- *    Description:    .
- *
- *    Notes:					.
- ******************************************************************************/
-void TxRequest_CAN (void)
-{  
-
-}
-
-/*******************************************************************************
- *    Function Name:  .
- *    Parameters:     .
- *    Return Value:   .
- *
- *    Description:    .
- *
- *    Notes:					.
- ******************************************************************************/
-void DisableINTRx_CAN (void)
-{   
-
-}
-
-/*******************************************************************************
- *    Function Name:  .
- *    Parameters:     .
- *    Return Value:   .
- *
- *    Description:    .
- *
- *    Notes:					.
- ******************************************************************************/
-void EnableINTRx_CAN (void)
-{  
-}
-
-/*******************************************************************************
- *    Function Name:  .
- *    Parameters:     .
- *    Return Value:   .
- *
- *    Description:    .
- *
- *    Notes:					.
- ******************************************************************************/
-void DisableINTTx_CAN (void)
-{
-}
-
-/*******************************************************************************
- *    Function Name:  .
- *    Parameters:     .
- *    Return Value:   .
- *
- *    Description:    .
- *
- *    Notes:					.
- ******************************************************************************/
-void EnableINTTx_CAN (void)
-{
-
-}
-
-/*******************************************************************************
- *    Function Name:  .
- *    Parameters:     .
- *    Return Value:   .
- *
- *    Description:    .
- *
- *    Notes:					.
- ******************************************************************************/
-void DisableINT_CAN (void)
-{
-}
-
-/*******************************************************************************
- *    Function Name:  .
- *    Parameters:     .
- *    Return Value:   .
- *
- *    Description:    .
- *
- *    Notes:					.
- ******************************************************************************/
-void EnableINT_CAN (void)
-{
-}
-
-/*******************************************************************************
- *    Function Name:  .
- *    Parameters:     .
- *    Return Value:   .
- *
- *    Description:    .
- *
- *    Notes:					.
- ******************************************************************************/
-void SetAddressFilter_CAN (U8 Address)
-{
-
-}
-
-/*******************************************************************************
- *    Function Name:  .
- *    Parameters:     .
- *    Return Value:   .
- *
- *    Description:    .
- *
- *    Notes:					.
- ******************************************************************************/
-void SelectRxBuffer_CAN (void)
-{
-
-}
-
-/*******************************************************************************
- *    Function Name:  .
- *    Parameters:     .
- *    Return Value:   .
- *
- *    Description:    .
- *
- *    Notes:					.
- ******************************************************************************/
-void SelectTxBuffer_CAN (U8 Window)
-{
-
-}
-
-/*******************************************************************************
- *    Function Name:    .                            
- *    Parameters:  	    .
- *    Return Value: 	  .                                              
- *
- *    Description:      .
- *                           					            
- *    Notes:            CAN INTERRUPT Shall be ENABLED before ENABLE_IRQ
- *                      
- ******************************************************************************/
 
 S32 Open_CAN (U32 ctrl)
 {
@@ -241,64 +49,19 @@ S32 Open_CAN (U32 ctrl)
 	FLEXCAN_SetRxMbGlobalMask(BOARD_CAN2_PERIPHERAL, FLEXCAN_RX_MB_EXT_MASK(0, 0, 0));
 
     return 0;
-
 }
 
-/*******************************************************************************
- *    Function Name:  .
- *    Parameters:     .
- *    Return Value:   .
- *
- *    Description:    .
- *
- *    Notes:					.
- ******************************************************************************/
 void Close_CAN (void)
 {
-
+	FLEXCAN_Deinit(CAN2);
 }
 
-/*******************************************************************************
- *    Function Name:    .                            
- *    Parameters:  	    .
- *    Return Value: 	.                                              
- *
- *    Description:      .
- *                           					            
- *    Notes:       Byte3:  SID10 SID09 SID08 SID07 SID06 SID05 SID04 SID03
- *       									 bit28 bit27 bit26 bit25 bit24 bit23 bit22 bit21    					            
- *                 Byte2:  SID02 SID01 SID00 EID17 EID16 EID15 EID14 EID13
- *       									 bit20 bit19 bit18 bit17 bit16 bit15 bit14 bit13
- *                 Byte1:  EID12 EID11 EID10 EID09 EID08 EID07 EID06 EID05
- *       									 bit12 bit11 bit10 bit09 bit08 bit07 bit06 bit05
- *                 Byte0:  EID04 EID03 EID02 EID01 EID00  xx    xx    xx   
- *       									 bit04 bit03 bit02 bit01 bit00  xx    xx    xx  
- ******************************************************************************/
 S8 RxFilter_CAN (U8 FilterN, U32 Data)
 {
     aPGN_FILTER[FilterN] = Data;
     return 0; 
 }
 
-/*******************************************************************************
- *    Function Name:    .                            
- *    Parameters:  	    .
- *    Return Value: 	  .                                              
- *
- *    Description:      .
- *                           					            
- *    Notes:           
- *            Byte0:  BIT7 BIT6 BIT5 BIT4 BIT3 BIT2 BIT1 BIT0 
- *                     FF   RTR  x    x   DLC3 DLC2 DLC1 DLC0 
- *            Byte1:  BIT7 BIT6 BIT5 BIT4 BIT3 BIT2 BIT1 BIT0 
- *                     x    x    x   ID28 ID27 ID26 ID25 ID24    
- *            Byte2:  BIT7 BIT6 BIT5 BIT4 BIT3 BIT2 BIT1 BIT0 
- *                    ID23 ID22 ID21 ID20 ID19 ID18 ID17 ID16   
- *            Byte3:  BIT7 BIT6 BIT5 BIT4 BIT3 BIT2 BIT1 BIT0 
- *                    ID15 ID14 ID13 ID12 ID11 ID10 ID09 ID08   
- *            Byte4:  BIT7 BIT6 BIT5 BIT4 BIT3 BIT2 BIT1 BIT0
- *                    ID07 ID06 ID05 ID04 ID03 ID02 ID01 ID00
- ******************************************************************************/
 BOOL8 GetMSG_CAN (J1939MESSAGE_T* pMSG)
 {
 	uint32_t msgId;
@@ -330,7 +93,6 @@ BOOL8 GetMSG_CAN (J1939MESSAGE_T* pMSG)
 
 }
 
-
 void PutMSG_CAN (J1939MESSAGE_T* pMSG)
 {
 	flexcan_frame_t frame;
@@ -354,8 +116,6 @@ void PutMSG_CAN (J1939MESSAGE_T* pMSG)
 
 	FLEXCAN_TransferSendBlocking(TS_CAN, TX_MESSAGE_BUFFER_NUM, &frame);
 }
-
-
 
 void BOARD_CAN2_FLEXCAN_IRQHANDLER(void)
 {

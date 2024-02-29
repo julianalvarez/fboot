@@ -26,21 +26,7 @@ extern "C"
 U8	                    MsgReady_CAN (void);
 U8                      WaitIdle_CAN (void);
 void                    ReleaseBF_CAN (void);
-void                    TxRequest_CAN (void);
 
-void                    DisableINTRx_CAN (void);
-void                    EnableINTRx_CAN (void);
-
-void                    DisableINTTx_CAN (void);
-void                    EnableINTTx_CAN (void);
-
-void                    DisableINT_CAN (void);
-void                    EnableINT_CAN (void);
-
-void                    SelectRxBuffer_CAN (void);
-void                    SelectTxBuffer_CAN (U8 Window);
-
-void                    SetAddressFilter_CAN (U8 Address);
 S8                      RxFilter_CAN (U8 FilterN, U32 Data); 
 
 S32                     Open_CAN (U32 ctrl);

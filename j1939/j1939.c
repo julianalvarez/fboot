@@ -1,8 +1,6 @@
 
-
 /* Include ********************************************************************/
 #include <cfg.h>
-//#include <environment.cfg>
 #include <typedef.h>
 #include <types32.h>
 #include <timeout.h>
@@ -23,14 +21,6 @@ U8                      J1939_DstAddress;
 /* Prototypes *****************************************************************/
 /* Functions ******************************************************************/
 
-/***************************************************************************//*!
-[General description here]
-
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note                 [Write notes here]
-*******************************************************************************/
 void txBL_J1939 (U8* pData, U32 Size)
 {
   U32                   tmp;
@@ -55,14 +45,6 @@ void txBL_J1939 (U8* pData, U32 Size)
   }
 }
 
-/***************************************************************************//*!
-[General description here]
-
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note                 [Write notes here]
-*******************************************************************************/
 S32 rxBL_J1939 (U8* pData, U32 Size, U32 Timeout)
 {
   J1939MESSAGE_T        OneMessage;
@@ -104,14 +86,6 @@ S32 rxBL_J1939 (U8* pData, U32 Size, U32 Timeout)
   return (if_has_timeout());
 }
 
-/***************************************************************************//*!
-[General description here]
-
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note                 [Write notes here]
-*******************************************************************************/
 void PutCmdBL_J1939 (U8 Cmd, U32 Address, U32 Size) 
 {
   U8                    Data[8];
@@ -126,14 +100,6 @@ void PutCmdBL_J1939 (U8 Cmd, U32 Address, U32 Size)
                          8U);
 }
 
-/***************************************************************************//*!
-[General description here]
-
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note                 FIXME: We need Timeout
-*******************************************************************************/
 S32 GetCmdBL_J1939 (U8* Cmd, U32* Address, U32* Size, U32 Timeout) 
 {
   J1939MESSAGE_T        OneMessage;
@@ -157,14 +123,6 @@ S32 GetCmdBL_J1939 (U8* Cmd, U32* Address, U32* Size, U32 Timeout)
   return ((S32)if_has_timeout());
 }
 
-/***************************************************************************//*!
-[General description here]
-
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note                 [Write notes here]
-*******************************************************************************/
 void TransmitMessage_J1939 (U16 Pgn, U8 Prio, U8* pData, U32 Size)
 {
   J1939MESSAGE_T 				OneMessage;
@@ -184,8 +142,6 @@ void TransmitMessage_J1939 (U16 Pgn, U8 Prio, U8* pData, U32 Size)
 
   mmemcpy (pData, OneMessage.Data.Byte, Size);
 
-  SelectTxBuffer_CAN (0U);
-
   do 
   {
     //if (WaitIdle_CAN() == FALSE) {
@@ -195,14 +151,6 @@ void TransmitMessage_J1939 (U16 Pgn, U8 Prio, U8* pData, U32 Size)
   } while_timeout (1000, 0);
 }
 
-/***************************************************************************//*!
-[General description here]
-
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note                 [Write notes here]
-*******************************************************************************/
 S32 ReceiveMessages_J1939 (J1939MESSAGE_T* pOneMessage)
 {
   BOOL8                 bfPutInReceive;
@@ -223,14 +171,6 @@ S32 ReceiveMessages_J1939 (J1939MESSAGE_T* pOneMessage)
   return (bfPutInReceive);
 }
 
-/***************************************************************************//*!
-[General description here]
-
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note                 [Write notes here]
-*******************************************************************************/
 void mmemcpy (U8* pSrc, U8* pDst, U8 Size)
 {
   while (Size--)

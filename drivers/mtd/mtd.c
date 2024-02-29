@@ -1,9 +1,6 @@
 
-
 /* Include ********************************************************************/
 #include <cfg.h>
-
-//#include <environment.cfg>
 #include <types32.h>
 #include <mtd.h>
 #include <cmsis_gcc.h>
@@ -21,14 +18,6 @@ static MTD_T*           find_MTD (U32 Address);
 
 /* Functions ******************************************************************/
 
-/***************************************************************************//*!
-[General description here]
-
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note                 When we register, we OPEN the device too.
-*******************************************************************************/
 S32 register_MTD (MTD_T* ptMTD)
 {
   U32                   i;
@@ -47,21 +36,10 @@ S32 register_MTD (MTD_T* ptMTD)
   tMTD[i].pStartSector  = ptMTD->pStartSector; 
   tMTD[i].TimeOutWrite  = ptMTD->TimeOutWrite;  
   tMTD[i].TimeOutErase  = ptMTD->TimeOutErase; 
-
-  /* call here the Open func ? */
-//  tMTD[i].open (&tMTD[i]);
   
   return (0);
 }
 
-/***************************************************************************//*!
-[General description here]
-
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note                 [Write notes here]
-*******************************************************************************/
 S32 read_MTD (U32 Address, U8* pData, U32 Size)
 {
   MTD_T*                ptMTD;
@@ -85,14 +63,6 @@ S32 read_MTD (U32 Address, U8* pData, U32 Size)
   return (0);
 }
 
-/***************************************************************************//*!
-[General description here]
-
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note                 [Write notes here]
-*******************************************************************************/
 S32 write_MTD (U32 Address, U8* pData, U32 Size)
 {
     MTD_T*              ptMTD;
@@ -103,6 +73,7 @@ S32 write_MTD (U32 Address, U8* pData, U32 Size)
     if (ptMTD == NULL) {
         return -1;
     }
+    __disable_irq();
 
     ptMTD->open(ptMTD);
 
@@ -115,18 +86,11 @@ S32 write_MTD (U32 Address, U8* pData, U32 Size)
     ptMTD->write (Address, pData, Size);
 
     ptMTD->close();
+    __enable_irq();
 
     return (0);
 }
 
-/***************************************************************************//*!
-[General description here]
-
-\param Param1         [Param1 description here]
-\param Param2         [Param2 description here]
-\return               [Return description here]
-\note                 [Write notes here]
-*******************************************************************************/
 static MTD_T* find_MTD (U32 Address)
 {
   U8                    i;
