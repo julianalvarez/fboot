@@ -51,13 +51,6 @@ extern "C"
 S32                     Open_CANSTEER_V3(void);
 
 static inline void Reset() {
-	/*
-    //Configure the software reset bit in the SRC register
-    SRC->SRSR |= SRC_SCR_CORE0_RST_MASK;
-
-    // Wait for the software reset bit to clear, indicating that the reset is complete
-    while (SRC->SRSR & SRC_SCR_CORE0_RST_MASK) {
-    }*/
 	__NVIC_SystemReset();
 }
 

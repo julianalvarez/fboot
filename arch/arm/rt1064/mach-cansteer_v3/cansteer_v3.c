@@ -86,7 +86,7 @@ S32 Open_CANSTEER_V3 (void)
 #endif
 
 	/* Address Device */ 
-    //read_MTD (EFLASH_BASE + EEPROM_J1939_ADDRESS, &J1939_SrcAddress, 1U);
+    read_MTD (EFLASH_BASE + EEPROM_J1939_ADDRESS, &J1939_SrcAddress, 1U);
     
 	RxFilter_CAN (0U, ((((U32)J1939_PGN_BOOTLOADER) << 8) | ((U32)J1939_SrcAddress) << 8));
 	
