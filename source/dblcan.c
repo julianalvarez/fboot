@@ -55,7 +55,7 @@ S32 DeviceCAN_BL (void)
         {
             case RUN_CMD_BL:
             {
-                PRINTF( "> Run   [ Start: 0x%08X ]\r\n", uAddress);
+                //PRINTF( "> Run   [ Start: 0x%08X ]\r\n", uAddress);
                 // Delay 4 Sec.
                 do {} while_timeout (4000U, 0);
                 //__DISABLE_FIQ();
@@ -66,13 +66,9 @@ S32 DeviceCAN_BL (void)
             case READ_CMD_BL:
             {
                 if (read_MTD (uAddress, aBUFFER, uSize) == 0) {
-                	PRINTF( "> Read   [ Start: 0x%08X   Size: 0x%08X ]\r\n",
-                             uAddress, 
-                             uSize);
+                	//PRINTF( "> Read   [ Start: 0x%08X   Size: 0x%08X ]\r\n", uAddress, uSize);
                 } else {
-                	PRINTF( "> Error   [ Start: 0x%08X   Size: 0x%08X ]\r\n",
-                             uAddress, 
-                             uSize);
+                	//PRINTF( "> Error  [ Start: 0x%08X   Size: 0x%08X ]\r\n", uAddress, uSize);
                     // Invalidate Data
                     for (i = 0; i < uSize; i++) {
                         aBUFFER[i] = 0;
@@ -88,14 +84,9 @@ S32 DeviceCAN_BL (void)
                 if (write_MTD (uAddress, aBUFFER, uSize) == 0) {
                     // This was moved before rxBL_J1939 because we already has send
                     //RDY, and we lose packets if we are drawing in the screen
-                	PRINTF( "> Write   [ Start: 0x%08X   Size: 0x%08X ]",
-                             uAddress, 
-                             uSize);
-
+                	//PRINTF( "> Write   [ Start: 0x%08X   Size: 0x%08X ]\r\n", uAddress, uSize);
                 } else {
-                	PRINTF( "> Error   [ Start: 0x%08X   Size: 0x%08X ]\r\n",
-                             uAddress, 
-                             uSize);
+                	//PRINTF( "> Error   [ Start: 0x%08X   Size: 0x%08X ]\r\n", uAddress, uSize);
                 }
             } break;
             
@@ -104,7 +95,7 @@ S32 DeviceCAN_BL (void)
         
         //Send RDY
         PutCmdBL_J1939 (RDY_CMD_BL, 0U, MEMORY_TRANSFER_MAX);
-        PRINTF("< Rdy" );
+        //PRINTF("< Rdy" );
         // Get CMD
         if_timeout = GetCmdBL_J1939 ((U8*)&eCMD_BL, &uAddress, &uSize, 0U);
     }
@@ -116,10 +107,10 @@ S32 DeviceCAN_BL (void)
 void Run_BL (void)
 {
     U32                 uStatusMemory;
-    U32                 Mayor_Ver;
-    U32                 Minor_Ver;
-    U32                 Release_Ver;
-    U32                 Build_Ver;
+//    U32                 Mayor_Ver;
+//    U32                 Minor_Ver;
+//    U32                 Release_Ver;
+//    U32                 Build_Ver;
     U32                 uAppIDECU;
     U32                 uSoftVerECU;
     
@@ -135,27 +126,24 @@ void Run_BL (void)
         // Check Software Version in Device
         read_MTD (MEMORY_READ_BASE + EEPROM_SOFTWARE_VER_INFO, (U8*)&uSoftVerECU, 3U);
 
-        Build_Ver   = (uSoftVerECU >> 16) & 0xFFU;
-        Mayor_Ver   = (uSoftVerECU >> 12) & 0x0FU;
-        Minor_Ver   = (uSoftVerECU >>  4) & 0x0FU;
-        Release_Ver =  uSoftVerECU        & 0x0FU;
+//        Build_Ver   = (uSoftVerECU >> 16) & 0xFFU;
+//        Mayor_Ver   = (uSoftVerECU >> 12) & 0x0FU;
+//        Minor_Ver   = (uSoftVerECU >>  4) & 0x0FU;
+//        Release_Ver =  uSoftVerECU        & 0x0FU;
 
         // Jump to Application
-        PRINTF( "Running SW AppID: %2d Ver: %1d.%1d.%1d-build%2d\r\n",
-                 uAppIDECU, Mayor_Ver, Minor_Ver, Release_Ver, Build_Ver);
+//        PRINTF( "Running SW AppID: %2d Ver: %1d.%1d.%1d-build%2d\r\n",
+//                 uAppIDECU, Mayor_Ver, Minor_Ver, Release_Ver, Build_Ver);
         // Delay 100ms to wait the print in console before jump to program.
         do {} while_timeout (100U, 0);
         
-
 		Close_TIMEOUT();
 		Close_CAN();
         App ();
 
 
     } else {
-    	PRINTF( "Status: INVALID program\r\n");
-
-
+    	//PRINTF( "Status: INVALID program\r\n");
    }
 }
 
