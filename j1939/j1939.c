@@ -7,6 +7,7 @@
 #include <can.h>
 #include <j1939.h>
 #include <stdio.h>
+#include "fsl_debug_console.h"
 
 /*                  
  *  FIXME: Check SA and DA every Packet.
@@ -144,31 +145,21 @@ void TransmitMessage_J1939 (U16 Pgn, U8 Prio, U8* pData, U32 Size)
 
   do 
   {
-    //if (WaitIdle_CAN() == FALSE) {
         PutMSG_CAN (&OneMessage);
         break_timeout;
-    //}
   } while_timeout (1000, 0);
 }
 
 S32 ReceiveMessages_J1939 (J1939MESSAGE_T* pOneMessage)
 {
-  BOOL8                 bfPutInReceive;
-    
-  //bfPutInReceive = FALSE;
-  //while (MsgReady_CAN() != 0U)
-  //{
-    bfPutInReceive = TRUE;
-    
-    /* Get the Message */
-    bfPutInReceive = GetMSG_CAN (pOneMessage);
-   
-    /* Release CAN Buffer */
-    //ReleaseBF_CAN();
+	BOOL8                 bfPutInReceive = FALSE;
 
- //}
-
-  return (bfPutInReceive);
+	while (MsgReady_CAN() != 0U)
+	{
+		/* Get the Message */
+		bfPutInReceive = GetMSG_CAN (pOneMessage);
+	}
+	return (bfPutInReceive);
 }
 
 void mmemcpy (U8* pSrc, U8* pDst, U8 Size)

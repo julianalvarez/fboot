@@ -55,7 +55,7 @@ S32 DeviceCAN_BL (void)
         {
             case RUN_CMD_BL:
             {
-                PRINTF( "> Run   [ Start: 0x%08X ]", uAddress);
+                PRINTF( "> Run   [ Start: 0x%08X ]\r\n", uAddress);
                 // Delay 4 Sec.
                 do {} while_timeout (4000U, 0);
                 //__DISABLE_FIQ();
@@ -66,11 +66,11 @@ S32 DeviceCAN_BL (void)
             case READ_CMD_BL:
             {
                 if (read_MTD (uAddress, aBUFFER, uSize) == 0) {
-                	PRINTF( "> Read   [ Start: 0x%08X   Size: 0x%08X ]",
+                	PRINTF( "> Read   [ Start: 0x%08X   Size: 0x%08X ]\r\n",
                              uAddress, 
                              uSize);
                 } else {
-                	PRINTF( "> Error   [ Start: 0x%08X   Size: 0x%08X ]",
+                	PRINTF( "> Error   [ Start: 0x%08X   Size: 0x%08X ]\r\n",
                              uAddress, 
                              uSize);
                     // Invalidate Data
@@ -83,7 +83,8 @@ S32 DeviceCAN_BL (void)
 
             case WRITE_CMD_BL:
             {
-                rxBL_J1939 (aBUFFER, uSize, 0U);                
+                rxBL_J1939 (aBUFFER, uSize, 0U);
+
                 if (write_MTD (uAddress, aBUFFER, uSize) == 0) {
                     // This was moved before rxBL_J1939 because we already has send
                     //RDY, and we lose packets if we are drawing in the screen
@@ -92,7 +93,7 @@ S32 DeviceCAN_BL (void)
                              uSize);
 
                 } else {
-                	PRINTF( "> Error   [ Start: 0x%08X   Size: 0x%08X ]",
+                	PRINTF( "> Error   [ Start: 0x%08X   Size: 0x%08X ]\r\n",
                              uAddress, 
                              uSize);
                 }
@@ -140,7 +141,7 @@ void Run_BL (void)
         Release_Ver =  uSoftVerECU        & 0x0FU;
 
         // Jump to Application
-        PRINTF( "Running SW AppID: %2d Ver: %1d.%1d.%1d-build%2d",
+        PRINTF( "Running SW AppID: %2d Ver: %1d.%1d.%1d-build%2d\r\n",
                  uAppIDECU, Mayor_Ver, Minor_Ver, Release_Ver, Build_Ver);
         // Delay 100ms to wait the print in console before jump to program.
         do {} while_timeout (100U, 0);
@@ -152,7 +153,7 @@ void Run_BL (void)
 
 
     } else {
-    	PRINTF( "Status: INVALID program");
+    	PRINTF( "Status: INVALID program\r\n");
 
 
    }

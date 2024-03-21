@@ -37,11 +37,6 @@ flexcan_frame_t rxframe;
 /* Prototypes *****************************************************************/
 /* Functions ******************************************************************/
 
-void ReleaseBF_CAN (void)
-{
-    //__pCAN->CMD = (1 << 2);                   /* Release receive buffer */
-}
-
 S32 Open_CAN (U32 ctrl)
 {
 	BOARD_InitPins_CAN2();
@@ -64,16 +59,29 @@ S8 RxFilter_CAN (U8 FilterN, U32 Data)
 
 BOOL8 GetMSG_CAN (J1939MESSAGE_T* pMSG)
 {
-	uint32_t msgId;
+    uint32_t msgId;
+    uint32_t i;
+    BOOL8               match;
 
-	if(rxComplete){
-		msgId = rxframe.id;
+    match = FALSE;
+    msgId = rxframe.id;
 
-		pMSG->Priority = (msgId & 0x1C0000) >> 26;
-		pMSG->PDUFormat = (msgId & 0x3FF0000) >> 16;
-		pMSG->PDUSpecific = (msgId & 0xFF00) >> 8;
-		pMSG->SourceAddress = msgId & 0xFF;
-		pMSG->DataLength = rxframe.length;
+	pMSG->Priority = (msgId & 0x1C0000) >> 26;
+	pMSG->PDUFormat = (msgId & 0x3FF0000) >> 16;
+	pMSG->PDUSpecific = (msgId & 0xFF00) >> 8;
+	pMSG->SourceAddress = msgId & 0xFF;
+	pMSG->DataLength = rxframe.length;
+
+    // Filter PGNS'
+    msgId &= 0x1FFFF00;
+    for (i = 0; i < MAX_PGN_FILTERS; i++) {
+            if (aPGN_FILTER[i] == msgId) {
+                match = true;
+                break;
+            }
+    }
+
+    if(match){
 		// DATA FRAME
 		*(uint8_t*) &pMSG->Data.Byte[0] = rxframe.dataByte0;
 		*(uint8_t*) &pMSG->Data.Byte[1] = rxframe.dataByte1;
@@ -83,14 +91,17 @@ BOOL8 GetMSG_CAN (J1939MESSAGE_T* pMSG)
 		*(uint8_t*) &pMSG->Data.Byte[5] = rxframe.dataByte5;
 		*(uint8_t*) &pMSG->Data.Byte[6] = rxframe.dataByte6;
 		*(uint8_t*) &pMSG->Data.Byte[7] = rxframe.dataByte7;
-		rxComplete = false;
+//    	if(rxframe.dataByte0 == 0x0 && rxframe.dataByte2 == 0x7e)
+//    	{
+//    		PRINTF("AFGAAGA");
+//    	}
+	    rxComplete = FALSE;
 		return 1;
-	}
-	else
-	{
-		return 0;
-	}
-
+    }
+    else{
+        rxComplete = FALSE;
+        return 0;
+    }
 }
 
 void PutMSG_CAN (J1939MESSAGE_T* pMSG)
@@ -119,11 +130,17 @@ void PutMSG_CAN (J1939MESSAGE_T* pMSG)
 
 void BOARD_CAN2_FLEXCAN_IRQHANDLER(void)
 {
-	if (FLEXCAN_GetMbStatusFlags(TS_CAN,1<<RX_MESSAGE_BUFFER_NUM))
-	{
-		FLEXCAN_ClearMbStatusFlags(CAN2,1<<RX_MESSAGE_BUFFER_NUM);
-		FLEXCAN_ReadRxMb(TS_CAN,RX_MESSAGE_BUFFER_NUM,&rxframe);
-		rxComplete=true;
-	}
+	while (!FLEXCAN_GetMbStatusFlags(TS_CAN, 1 << RX_MESSAGE_BUFFER_NUM));
+	FLEXCAN_ReadRxMb(TS_CAN,RX_MESSAGE_BUFFER_NUM,&rxframe);
+	rxComplete=true;
+	while(!rxComplete);
+	FLEXCAN_ClearMbStatusFlags(CAN2,1<<RX_MESSAGE_BUFFER_NUM);
 }
+
+U8 MsgReady_CAN (void)
+{
+  	/* Return true if msg ready, false if not */
+  	return (rxComplete);
+}
+
 /* End of $Workfile: can.c$ */

@@ -25,7 +25,6 @@ extern "C"
 
 U8	                    MsgReady_CAN (void);
 U8                      WaitIdle_CAN (void);
-void                    ReleaseBF_CAN (void);
 
 S8                      RxFilter_CAN (U8 FilterN, U32 Data); 
 
@@ -37,6 +36,8 @@ void                    PutMSG_CAN (J1939MESSAGE_T* pMSG);
 
 bool 					CAN_GetTxComplete (void);
 bool 					CAN_GetRxComplete (void);
+
+U8 						MsgReady_CAN (void);
 
 #if defined(__cplusplus)
 }

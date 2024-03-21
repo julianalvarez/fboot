@@ -13,7 +13,7 @@
 #define SECTOR_SIZE                         0x400U
 
 #define SFLASH_SECTOR_SIZE                  0x10000U
-#define SFLASH_START_ENTRY                  0x70000000U
+#define SFLASH_START_ENTRY                  0x70030000U
 
 /* Typedefs *******************************************************************/
 /* Globals ********************************************************************/
@@ -21,10 +21,10 @@
 static MTD_T*           pMTD;
 
 /* Prototypes *****************************************************************/
-__RAMFUNC(RAM2) static S32              Read_SFLASH (U32 Address, U8* pData, U32 Size);
-__RAMFUNC(RAM2) static S32              Write_SFLASH (U32 Address, U8* pData, U32 Size);
-__RAMFUNC(RAM2) static S32              EraseSector_SFLASH (U32 Address, U32 Size);
-__RAMFUNC(RAM2) static S32              Close_SFLASH (void);
+static S32              Read_SFLASH (U32 Address, U8* pData, U32 Size);
+static S32              Write_SFLASH (U32 Address, U8* pData, U32 Size);
+static S32              EraseSector_SFLASH (U32 Address, U32 Size);
+static S32              Close_SFLASH (void);
 
 /* Functions ******************************************************************/
 
@@ -117,13 +117,15 @@ int32_t Write_SFLASH (uint32_t Address, uint8_t* pData, uint32_t Size)
     }
         
     EraseSector_SFLASH(Address, SECTOR_SIZE);
-    
+    __disable_irq();
+    Address = Address - 0x70000000;
     for (i = 0; i < Size; i++) {
         if (SFLASH_WriteByte(BOARD_FLEXSPI,Address + i, pData[i]) != 0){
             return 2;
         }
     }
-    
+    __enable_irq();
+
     return Status; 
     
 }

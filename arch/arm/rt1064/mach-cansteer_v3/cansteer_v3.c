@@ -45,7 +45,7 @@ MTD_T                   VIRTUAL_EEPROM =
 MTD_T                   EFLASH =
 {
   0x70030000U,
-  0x00FD0000U,
+  0x003D0000U,
   0xFFFFFFFFU,
   aFLASH_START_SECTOR,
   0,
