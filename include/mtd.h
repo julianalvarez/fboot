@@ -1,5 +1,3 @@
-
-
 #ifndef MTD_H
 #define MTD_H
 
@@ -14,17 +12,17 @@
 typedef struct MTD_T MTD_T;
 struct MTD_T
 {
-  uint32_t AddressDevice;
-  uint32_t SizeDevice;
-  uint32_t MaskAddress;
-  const uint32_t* pStartSector; 
-  uint32_t TimeOutWrite;  
-  uint32_t TimeOutErase; 
-  int32_t (*open) (MTD_T* ptMTD);
-  int32_t (*read) (uint32_t Address, uint8_t* pData, uint32_t Size);
-  int32_t (*write) (uint32_t Address, uint8_t* pData, uint32_t Size);
-  int32_t (*erase) (uint32_t Address, uint32_t Size);
-  int32_t (*close) (void);
+	uint32_t AddressDevice;
+	uint32_t SizeDevice;
+	uint32_t MaskAddress;
+	const uint32_t* pStartSector;
+	uint32_t TimeOutWrite;
+	uint32_t TimeOutErase;
+	int32_t (*open) (MTD_T* ptMTD);
+	int32_t (*read) (uint32_t Address, uint8_t* pData, uint32_t Size);
+	int32_t (*write) (uint32_t Address, uint8_t* pData, uint32_t Size);
+	int32_t (*erase) (uint32_t Address, uint32_t Size);
+	int32_t (*close) (void);
 };
 
 /* Externs ********************************************************************/

@@ -1,15 +1,14 @@
-
-
 /* Include ********************************************************************/
-#include <cfg.h>
 #include <stdio.h>
-#include <types32.h>
-#include <mtd.h>
-//#include <chip.h>
-#include <sflash_W25Q32JV.h>
-#include <cr_section_macros.h>
-/* Defines ********************************************************************/
 
+#include "cfg.h"
+#include "types32.h"
+#include "mtd.h"
+
+/*---CSP---*/
+#include "sflash_W25Q32JV.h"
+
+/* Defines ********************************************************************/
 #define SECTOR_SIZE                         0x400U
 
 #define SFLASH_SECTOR_SIZE                  0x10000U
@@ -28,15 +27,6 @@ static S32              Close_SFLASH (void);
 
 /* Functions ******************************************************************/
 
-/*******************************************************************************
-*    Function Name:  .
-*    Parameters:     .
-*    Return Value:   .
-*
-*    Description:    .
-*
-*    Notes:          .
-*******************************************************************************/
 int32_t Open_SFLASH (MTD_T* ptMTD)
 {
     pMTD         = ptMTD;
@@ -49,30 +39,12 @@ int32_t Open_SFLASH (MTD_T* ptMTD)
     return (Init_SFLASH());
 }
 
-/*******************************************************************************
-*    Function Name:  .
-*    Parameters:     .
-*    Return Value:   .
-*
-*    Description:    .
-*
-*    Notes:          .
-*******************************************************************************/
 int32_t Init_SFLASH (void)
 {
 	SFLASH_init();
     return (0);
 }
 
-/*******************************************************************************
-*    Function Name:  .
-*    Parameters:     .
-*    Return Value:   .
-*
-*    Description:    .
-*
-*    Notes:          .
-*******************************************************************************/
 static int32_t Read_SFLASH (uint32_t Address, uint8_t* pData, uint32_t Size)
 {
     int32_t             Status;
@@ -89,15 +61,6 @@ static int32_t Read_SFLASH (uint32_t Address, uint8_t* pData, uint32_t Size)
     return (Status);
 }
 
-/*******************************************************************************
-*    Function Name:  .
-*    Parameters:     .
-*    Return Value:   .
-*
-*    Description:    .
-*
-*    Notes:          Size <= 256 Bytes.
-*******************************************************************************/
 int32_t Write_SFLASH (uint32_t Address, uint8_t* pData, uint32_t Size)
 {
     S32 Status;
@@ -130,16 +93,6 @@ int32_t Write_SFLASH (uint32_t Address, uint8_t* pData, uint32_t Size)
     
 }
 
-
-/*******************************************************************************
-*    Function Name:  .
-*    Parameters:     .
-*    Return Value:   .
-*
-*    Description:    .
-*
-*    Notes:          Size multiple of SFLASH_SECTOR_SIZE
-*******************************************************************************/
 static int32_t EraseSector_SFLASH (uint32_t Address, uint32_t Size)
 {
     int32_t             Status;
@@ -166,19 +119,8 @@ static int32_t EraseSector_SFLASH (uint32_t Address, uint32_t Size)
 	return (Status);
 }
 
-/*******************************************************************************
-*    Function Name:  .
-*    Parameters:     .
-*    Return Value:   .
-*
-*    Description:    .
-*
-*    Notes:          .
-*******************************************************************************/
 int32_t Close_SFLASH (void)
 {
     return (0);
 }
-
-/* End of $Workfile: sflash_S25FL128S.c$ */
-
+/* End of $Workfile: sflash_W25Q32J.c$ */

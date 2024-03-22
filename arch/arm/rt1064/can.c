@@ -1,10 +1,12 @@
-
 /* Include ********************************************************************/
-#include <cfg.h>
-#include <types32.h>
-#include <can.h>
 #include "fsl_debug_console.h"
 #include "fsl_flexcan.h"
+
+#include "cfg.h"
+#include "types32.h"
+#include "can.h"
+
+/*---CSP----*/
 #include "board/pin_mux.h"
 #include "board/peripherals.h"
 
@@ -91,10 +93,7 @@ BOOL8 GetMSG_CAN (J1939MESSAGE_T* pMSG)
 		*(uint8_t*) &pMSG->Data.Byte[5] = rxframe.dataByte5;
 		*(uint8_t*) &pMSG->Data.Byte[6] = rxframe.dataByte6;
 		*(uint8_t*) &pMSG->Data.Byte[7] = rxframe.dataByte7;
-//    	if(rxframe.dataByte0 == 0x0 && rxframe.dataByte2 == 0x7e)
-//    	{
-//    		PRINTF("AFGAAGA");
-//    	}
+
 	    rxComplete = FALSE;
 		return 1;
     }
@@ -142,5 +141,4 @@ U8 MsgReady_CAN (void)
   	/* Return true if msg ready, false if not */
   	return (rxComplete);
 }
-
 /* End of $Workfile: can.c$ */

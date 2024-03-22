@@ -1,11 +1,10 @@
-
-
 #ifndef J1939_H
 #define J1939_H
 
 /* Include ********************************************************************/
-#include <types32.h>
-#include <typedef.h>
+#include "types32.h"
+#include "typedef.h"
+
 /* Enums **********************************************************************/
 typedef enum { 
                ADDRESS_CLAIM_TX, 
@@ -214,6 +213,3 @@ void					mmemcpy (U8* pSrc, U8* pDst, U8 Size);
 #endif /* J1939_H */
 
 /* End of $Workfile: j1939.h$ */
-
-
-

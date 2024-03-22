@@ -1,8 +1,6 @@
-
-
 /* Include ********************************************************************/
-#include <typedef.h>
-#include <timeout.h>
+#include "typedef.h"
+#include "timeout.h"
 
 /* Defines ********************************************************************/
 #define PERIOD_TIMER                        1U
@@ -22,6 +20,7 @@ static void 		    (*FunctionTM) (void);
 const pit_config_t BOARD_PIT_boot_config = {
   .enableRunInDebug = false
 };
+
 void Open_TIMEOUT (void)
 {
 	/* Initialize the PIT. */

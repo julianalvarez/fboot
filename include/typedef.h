@@ -1,9 +1,3 @@
-/*******************************************************************************
-** $Revision: 1$
-** $Date: 31/01/2011 04:04:57 p.m.$
-** $Author: Admin Leandro Gentili$
-**                                 COPYRIGHT (C) FORKWORKS. All rights reserved.
-*******************************************************************************/
 #ifndef _TYPEDEF_H
 #define _TYPEDEF_H
 
